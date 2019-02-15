@@ -19,7 +19,8 @@ class City:
 # In the body of the `cityreader` function, use Python's built-in "csv" module
 # to read this file so that each record is imported into a City instance. Then
 # return the list with all the City instances from the function.
-# Google "python 3 csv" for references and use your Google-fu for other examples.
+# Google "python 3 csv" for references
+# and use your Google-fu for other examples.
 #
 # Store the instances in the "cities" list, below.
 #
@@ -35,7 +36,8 @@ def cityreader(cities=[]):
     with open('cities.csv', newline='') as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
-            cities.append(City(row['city'], row['lat'], row['lng']))
+            cities.append(City(row['city'], float(
+                row['lat']), float(row['lng'])))
     return cities
 
 
@@ -50,15 +52,17 @@ for c in cities:
 # Allow the user to input two points, each specified by latitude and longitude.
 # These points form the corners of a lat/lon square. Pass these latitude and
 # longitude values as parameters to the `cityreader_stretch` function, along
-# with the `cities` list that holds all the City instances from the `cityreader`
-# function. This function should output all the cities that fall within the
-# coordinate square.
+# with the `cities` list that holds all the City instances
+# from the `cityreader` function. This function should output all the cities
+# that fall within the coordinate square.
 #
 # Be aware that the user could specify either a lower-left/upper-right pair of
-# coordinates, or an upper-left/lower-right pair of coordinates. Hint: normalize
-# the input data so that it's always one or the other, then search for cities.
-# In the example below, inputting 32, -120 first and then 45, -100 should not
-# change the results of what the `cityreader_stretch` function returns.
+# coordinates, or an upper-left/lower-right pair of coordinates.
+# Hint: normalize the input data so that it's always one or the other,
+# then search for cities.
+# In the example below, inputting 32, -120 first and then 45,
+# -100 should not change the results of what
+# the `cityreader_stretch` function returns.
 #
 # Example I/O:
 #
@@ -78,11 +82,28 @@ for c in cities:
 
 
 def cityreader_stretch(lat1, lon1, lat2, lon2, cities=[]):
-    # within will hold the cities that fall within the specified region
-    within = []
-
     # TODO Ensure that the lat and lon valuse are all floats
     # Go through each city and check to see if it falls within
     # the specified coordinates.
 
+    if float(lat1) > float(lat2):
+        f_lat1 = float(lat2)
+        f_lon1 = float(lon2)
+        f_lat2 = float(lat1)
+        f_lon2 = float(lon1)
+    else:
+        f_lat1 = float(lat1)
+        f_lon1 = float(lon1)
+        f_lat2 = float(lat2)
+        f_lon2 = float(lon2)
+
+    # within will hold the cities that fall within the specified region
+    within = [city for city in cities if (float(city.lat) > f_lat1 and float(
+        city.lat) < f_lat2) and (float(city.lon) > f_lon1 and float(city.lon) < f_lon2)]
+
+    for city in within:
+        print(f'{city.name}: ({city.lat}, {city.lon})')
     return within
+
+
+cityreader_stretch(45, -100, 32, -120, cities)
